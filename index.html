@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invoice & Receipt Generator</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033;padding:20px}
+header{text-align:center;margin-bottom:25px}
+header h1{color:#173b68;margin-bottom:6px}
+.container{max-width:850px;margin:auto}
+.panel,.paper{background:white;padding:22px;border-radius:12px;margin-bottom:20px}
+h2{font-size:19px;color:#173b68}
+label{display:block;font-size:14px;font-weight:bold;margin:13px 0 6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5e1;border-radius:7px;font-size:15px}
+textarea{min-height:65px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{padding:13px;border:0;border-radius:7px;background:#173b68;color:white;font-size:15px;font-weight:bold;cursor:pointer;margin-top:15px}
+button.secondary{background:#16835b}
+.paper h2{text-align:center;font-size:25px}
+.paper-top{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.line{border-bottom:1px solid #ddd;padding:10px 0}
+.total{text-align:right;font-size:20px;font-weight:bold;margin-top:20px}
+.muted{color:#64748b;font-size:13px}
+@media(max-width:500px){.grid{grid-template-columns:1fr}body{padding:10px}}
+@media print{
+body{background:white;padding:0}
+header,.form-panel,.actions{display:none!important}
+.paper{box-shadow:none;margin:0;padding:15px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>Invoice & Receipt Generator</h1>
+<p>Create professional invoices and receipts for your business.</p>
+</header>
+
+<div class="panel form-panel">
+<h2>Create your document</h2>
+
+<label>Document type</label>
+<select id="type" onchange="update()">
+<option>INVOICE</option>
+<option>RECEIPT</option>
+</select>
+
+<div class="grid">
+<div>
+<label>Business name</label>
+<input id="business" placeholder="Your business name" oninput="update()">
+</div>
+<div>
+<label>Customer name</label>
+<input id="customer" placeholder="Customer name" oninput="update()">
+</div>
+<div>
+<label>Document number</label>
+<input id="number" value="INV-001" oninput="update()">
+</div>
+<div>
+<label>Date</label>
+<input id="date" type="date" oninput="update()">
+</div>
+</div>
+
+<label>Business address / contact</label>
+<input id="contact" placeholder="Address, phone or email" oninput="update()">
+
+<label>Description of goods or services</label>
+<input id="item" placeholder="e.g. Website design" oninput="update()">
+
+<div class="grid">
+<div>
+<label>Quantity</label>
+<input id="quantity" type="number" min="0" value="1" oninput="update()">
+</div>
+<div>
+<label>Price per item (₦)</label>
+<input id="price" type="number" min="0" value="0" oninput="update()">
+</div>
+</div>
+
+<label>Additional notes</label>
+<textarea id="notes" placeholder="Thank you for your business!" oninput="update()"></textarea>
+
+<div class="actions">
+<button class="secondary" onclick="window.print()">Print / Save as PDF</button>
+</div>
+</div>
+
+<div class="paper">
+<div class="paper-top">
+<div>
+<h2 id="businessView">YOUR BUSINESS</h2>
+<p id="contactView" class="muted"></p>
+</div>
+<div>
+<h2 id="typeView">INVOICE</h2>
+<p>Number: <span id="numberView"></span></p>
+<p>Date: <span id="dateView"></span></p>
+</div>
+</div>
+
+<hr>
+<p><strong>Bill to:</strong> <span id="customerView">Customer name</span></p>
+<hr>
+<h3>Description</h3>
+<div class="line" id="itemView">Your goods or services</div>
+<p>Quantity: <span id="quantityView">1</span></p>
+<p>Unit price: ₦<span id="priceView">0.00</span></p>
+<div class="total">TOTAL: ₦<span id="totalView">0.00</span></div>
+<hr>
+<p id="notesView" class="muted">Thank you for your business!</p>
+<p class="muted" style="text-align:center">Generated with Invoice & Receipt Generator</p>
+</div>
+</div>
+
+<script>
+function update(){
+const get=id=>document.getElementById(id).value;
+const show=(id,value)=>document.getElementById(id).textContent=value;
+const quantity=Math.max(0,Number(get('quantity'))||0);
+const price=Math.max(0,Number(get('price'))||0);
+const money=n=>n.toLocaleString('en-NG',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+show('businessView',get('business')||'YOUR BUSINESS');
+show('contactView',get('contact'));
+show('customerView',get('customer')||'Customer name');
+show('typeView',get('type'));
+show('numberView',get('number'));
+show('dateView',get('date'));
+show('itemView',get('item')||'Your goods or services');
+show('quantityView',quantity);
+show('priceView',money(price));
+show('totalView',money(quantity*price));
+show('notesView',get('notes')||'Thank you for your business!');
+}
+document.getElementById('date').value=new Date().toISOString().slice(0,10);
+update();
+</script>
+</body>
+</html>
