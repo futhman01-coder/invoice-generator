@@ -41,7 +41,24 @@ header,.form-panel,.actions{display:none!important}
 
 <div class="panel form-panel">
 <h2>Create your document</h2>
-
+<label>Select Currency</label>
+<select id="currency" onchange="update()">
+<option value="NGN">Nigerian Naira (₦)</option>
+<option value="USD">US Dollar ($)</option>
+<option value="EUR">Euro (€)</option>
+<option value="GBP">British Pound (£)</option>
+<option value="CNY">Chinese Yuan (¥)</option>
+<option value="JPY">Japanese Yen (¥)</option>
+<option value="CAD">Canadian Dollar (C$)</option>
+<option value="AUD">Australian Dollar (A$)</option>
+<option value="GHS">Ghanaian Cedi (GH₵)</option>
+<option value="ZAR">South African Rand (R)</option>
+<option value="KES">Kenyan Shilling (KSh)</option>
+<option value="INR">Indian Rupee (₹)</option>
+<option value="AED">UAE Dirham (د.إ)</option>
+<option value="SAR">Saudi Riyal (﷼)</option>
+<option value="NONE">No Currency Symbol</option>
+</select>
 <label>Document type</label>
 <select id="type" onchange="update()">
 <option>INVOICE</option>
@@ -79,7 +96,7 @@ header,.form-panel,.actions{display:none!important}
 <input id="quantity" type="number" min="0" value="1" oninput="update()">
 </div>
 <div>
-<label>Price per item (₦)</label>
+<label>Price per item</label>
 <input id="price" type="number" min="0" value="0" oninput="update()">
 </div>
 </div>
@@ -111,8 +128,8 @@ header,.form-panel,.actions{display:none!important}
 <h3>Description</h3>
 <div class="line" id="itemView">Your goods or services</div>
 <p>Quantity: <span id="quantityView">1</span></p>
-<p>Unit price: ₦<span id="priceView">0.00</span></p>
-<div class="total">TOTAL: ₦<span id="totalView">0.00</span></div>
+<p>Unit price: <span id="priceView">0.00</span></p>
+<div class="total">TOTAL: <span id="totalView">0.00</span></div>
 <hr>
 <p id="notesView" class="muted">Thank you for your business!</p>
 <p class="muted" style="text-align:center">Generated with Invoice & Receipt Generator</p>
@@ -125,8 +142,8 @@ const get=id=>document.getElementById(id).value;
 const show=(id,value)=>document.getElementById(id).textContent=value;
 const quantity=Math.max(0,Number(get('quantity'))||0);
 const price=Math.max(0,Number(get('price'))||0);
-const money=n=>n.toLocaleString('en-NG',{minimumFractionDigits:2,maximumFractionDigits:2});
-
+const currency=get('currency')||'NGN';
+const money=n=>currency==='NONE'?n.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}):new Intl.NumberFormat('en',{style:'currency',currency:currency,currencyDisplay:'symbol',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
 show('businessView',get('business')||'YOUR BUSINESS');
 show('contactView',get('contact'));
 show('customerView',get('customer')||'Customer name');
