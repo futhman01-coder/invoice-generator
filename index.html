@@ -17,6 +17,16 @@ label{display:block;font-size:14px;font-weight:bold;margin:13px 0 6px}
 input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5e1;border-radius:7px;font-size:15px}
 textarea{min-height:65px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .item-row{
+display:grid;
+grid-template-columns:2fr 1fr 1fr;
+gap:10px;
+align-items:end;
+margin-bottom:15px;
+}
+@media(max-width:500px){
+.item-row{grid-template-columns:1fr}
+}
 button{padding:13px;border:0;border-radius:7px;background:#173b68;color:white;font-size:15px;font-weight:bold;cursor:pointer;margin-top:15px}
 button.secondary{background:#16835b}
 .paper h2{text-align:center;font-size:25px}
@@ -87,19 +97,24 @@ header,.form-panel,.actions{display:none!important}
 <label>Business address / contact</label>
 <input id="contact" placeholder="Address, phone or email" oninput="update()">
 
-<label>Description of goods or services</label>
-<input id="item" placeholder="e.g. Website design" oninput="update()">
+<div id="items">
+  <div class="item-row">
+    <div>
+      <label>Item description</label>
+      <input class="item-name" placeholder="e.g. Website design" oninput="update()">
+    </div>
+    <div>
+      <label>Quantity</label>
+      <input class="item-quantity" type="number" min="0" value="1" oninput="update()">
+    </div>
+    <div>
+      <label>Price per item</label>
+      <input class="item-price" type="number" min="0" value="0" oninput="update()">
+    </div>
+  </div>
+</div>
 
-<div class="grid">
-<div>
-<label>Quantity</label>
-<input id="quantity" type="number" min="0" value="1" oninput="update()">
-</div>
-<div>
-<label>Price per item</label>
-<input id="price" type="number" min="0" value="0" oninput="update()">
-</div>
-</div>
+<button type="button" onclick="addItem()">+ Add another item</button>
 
 <label>Additional notes</label>
 <textarea id="notes" placeholder="Thank you for your business!" oninput="update()"></textarea>
@@ -125,10 +140,8 @@ header,.form-panel,.actions{display:none!important}
 <hr>
 <p><strong>Bill to:</strong> <span id="customerView">Customer name</span></p>
 <hr>
-<h3>Description</h3>
-<div class="line" id="itemView">Your goods or services</div>
-<p>Quantity: <span id="quantityView">1</span></p>
-<p>Unit price: <span id="priceView">0.00</span></p>
+<h3>Items</h3>
+<div id="itemsView"></div>
 <div class="total">TOTAL: <span id="totalView">0.00</span></div>
 <hr>
 <p id="notesView" class="muted">Thank you for your business!</p>
@@ -137,11 +150,30 @@ header,.form-panel,.actions{display:none!important}
 </div>
 
 <script>
+  function addItem(){
+const container=document.getElementById('items');
+const row=document.createElement('div');
+row.className='item-row';
+row.innerHTML=`
+<div>
+<label>Item description</label>
+<input class="item-name" placeholder="e.g. Website design" oninput="update()">
+</div>
+<div>
+<label>Quantity</label>
+<input class="item-quantity" type="number" min="0" value="1" oninput="update()">
+</div>
+<div>
+<label>Price per item</label>
+<input class="item-price" type="number" min="0" value="0" oninput="update()">
+</div>`;
+container.appendChild(row);
+update();
+  }
 function update(){
 const get=id=>document.getElementById(id).value;
 const show=(id,value)=>document.getElementById(id).textContent=value;
-const quantity=Math.max(0,Number(get('quantity'))||0);
-const price=Math.max(0,Number(get('price'))||0);
+const rows=[...document.querySelectorAll('.item-row')];
 const currency=get('currency')||'NGN';
 const money=n=>currency==='NONE'?n.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2}):new Intl.NumberFormat('en',{style:'currency',currency:currency,currencyDisplay:'symbol',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
 show('businessView',get('business')||'YOUR BUSINESS');
@@ -150,10 +182,15 @@ show('customerView',get('customer')||'Customer name');
 show('typeView',get('type'));
 show('numberView',get('number'));
 show('dateView',get('date'));
-show('itemView',get('item')||'Your goods or services');
-show('quantityView',quantity);
-show('priceView',money(price));
-show('totalView',money(quantity*price));
+const itemData=rows.map(row=>({
+name:row.querySelector('.item-name').value,
+quantity:Math.max(0,Number(row.querySelector('.item-quantity').value)||0),
+price:Math.max(0,Number(row.querySelector('.item-price').value)||0)
+}));
+const total=itemData.reduce((sum,item)=>sum+item.quantity*item.price,0);
+const escapeHTML=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+document.getElementById('itemsView').innerHTML=itemData.map(item=>`<div class="line"><strong>${escapeHTML(item.name||'Item')}</strong><p>Quantity: ${item.quantity} | Unit price: ${money(item.price)}</p><p>Amount: ${money(item.quantity*item.price)}</p></div>`).join('');
+show('totalView',money(total));
 show('notesView',get('notes')||'Thank you for your business!');
 }
 document.getElementById('date').value=new Date().toISOString().slice(0,10);
