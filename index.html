@@ -17,16 +17,48 @@ label{display:block;font-size:14px;font-weight:bold;margin:13px 0 6px}
 input,select,textarea{width:100%;padding:12px;border:1px solid #ccd5e1;border-radius:7px;font-size:15px}
 textarea{min-height:65px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .item-row{
-display:grid;
-grid-template-columns:2fr 1fr 1fr;
-gap:10px;
-align-items:end;
-margin-bottom:15px;
+  .table-wrap{
+width:100%;
+overflow-x:auto;
+margin:15px 0;
 }
-@media(max-width:500px){
-.item-row{grid-template-columns:1fr}
+
+.items-table{
+width:100%;
+min-width:650px;
+border-collapse:collapse;
+background:white;
 }
+
+.items-table th,
+.items-table td{
+border:1px solid #d5dce5;
+padding:10px;
+text-align:left;
+}
+
+.items-table th{
+background:#173b68;
+color:white;
+}
+
+.items-table input{
+width:100%;
+min-width:75px;
+padding:9px;
+border:1px solid #ccd5e1;
+border-radius:5px;
+box-shadow:0 2px 5px rgba(0,0,0,0.08);
+}
+
+.items-table td{
+font-size:13px;
+}
+
+.items-table .sn{
+text-align:center;
+font-weight:bold;
+     }
 button{padding:13px;border:0;border-radius:7px;background:#173b68;color:white;font-size:15px;font-weight:bold;cursor:pointer;margin-top:15px}
 button.secondary{background:#16835b}
 .paper h2{text-align:center;font-size:25px}
@@ -97,25 +129,50 @@ header,.form-panel,.actions{display:none!important}
 <label>Business address / contact</label>
 <input id="contact" placeholder="Address, phone or email" oninput="update()">
 
-<div id="items">
-  <div class="item-row">
-    <div>
-      <label>Item description</label>
-      <input class="item-name" placeholder="e.g. Website design" oninput="update()">
-    </div>
-    <div>
-      <label>Quantity</label>
-      <input class="item-quantity" type="number" min="0" value="1" oninput="update()">
-    </div>
-    <div>
-      <label>Price per item</label>
-      <input class="item-price" type="number" min="0" value="0" oninput="update()">
-    </div>
-  </div>
+<div class="table-wrap">
+<table class="items-table">
+<thead>
+<tr>
+<th>S/N</th>
+<th>Item description</th>
+<th>Qty</th>
+<th>Unit price</th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody id="items">
+<tr class="item-row">
+<td class="sn">1</td>
+<td>
+<input class="item-name" list="itemSuggestions" placeholder="Enter item name" oninput="update()" onchange="applySuggestion(this)">
+</td>
+<td>
+<input class="item-quantity" type="number" min="0" value="1" oninput="update()">
+</td>
+<td>
+<input class="item-price" type="number" min="0" value="0" oninput="update()">
+</td>
+<td class="item-amount">0.00</td>
+</tr>
+</tbody>
+</table>
 </div>
 
-<button type="button" onclick="addItem()">+ Add another item</button>
+<datalist id="itemSuggestions">
+<option value="Laptop">
+<option value="Desktop Computer">
+<option value="Mobile Phone">
+<option value="Printer">
+<option value="Mouse">
+<option value="Keyboard">
+<option value="Website Design">
+<option value="Graphic Design">
+<option value="Consulting Service">
+<option value="Delivery">
+</datalist>
 
+<button type="button" onclick="addItem()">+ Add another item</button>
+<button type="button" class="secondary" onclick="saveItems()">Save My Items & Prices</button>
 <label>Additional notes</label>
 <textarea id="notes" placeholder="Thank you for your business!" oninput="update()"></textarea>
 
@@ -150,27 +207,85 @@ header,.form-panel,.actions{display:none!important}
 </div>
 
 <script>
+  const builtInItems=[
+'Laptop','Desktop Computer','Mobile Phone',
+'Printer','Mouse','Keyboard','Website Design',
+'Graphic Design','Consulting Service','Delivery'
+];
+
+function getSavedItems(){
+try{
+return JSON.parse(localStorage.getItem('invoiceItems')||'[]');
+}catch{
+return [];
+}
+}
+
+function refreshSuggestions(){
+const list=document.getElementById('itemSuggestions');
+const saved=getSavedItems();
+list.innerHTML='';
+[...new Set([...builtInItems,...saved.map(item=>item.name)])].forEach(name=>{
+const option=document.createElement('option');
+option.value=name;
+list.appendChild(option);
+});
+}
+
+function applySuggestion(input){
+const saved=getSavedItems().find(item=>
+item.name.toLowerCase()===input.value.trim().toLowerCase()
+);
+if(saved){
+input.closest('tr').querySelector('.item-price').value=saved.price;
+update();
+}
+}
+
+function saveItems(){
+const rows=[...document.querySelectorAll('.item-row')];
+const saved=getSavedItems();
+
+rows.forEach(row=>{
+const name=row.querySelector('.item-name').value.trim();
+const price=Number(row.querySelector('.item-price').value);
+
+if(name && price>=0){
+const existing=saved.findIndex(item=>
+item.name.toLowerCase()===name.toLowerCase()
+);
+const item={name,price};
+if(existing>=0){
+saved[existing]=item;
+}else{
+saved.push(item);
+}
+}
+});
+
+localStorage.setItem('invoiceItems',JSON.stringify(saved));
+refreshSuggestions();
+alert('Your items and prices have been saved!');
+  }
   function addItem(){
-const container=document.getElementById('items');
-const row=document.createElement('div');
+const tbody=document.getElementById('items');
+const row=document.createElement('tr');
 row.className='item-row';
 row.innerHTML=`
-<div>
-<label>Item description</label>
-<input class="item-name" placeholder="e.g. Website design" oninput="update()">
-</div>
-<div>
-<label>Quantity</label>
+<td class="sn"></td>
+<td>
+<input class="item-name" list="itemSuggestions" placeholder="Enter item name" oninput="update()" onchange="applySuggestion(this)">
+</td>
+<td>
 <input class="item-quantity" type="number" min="0" value="1" oninput="update()">
-</div>
-<div>
-<label>Price per item</label>
+</td>
+<td>
 <input class="item-price" type="number" min="0" value="0" oninput="update()">
-</div>`;
-container.appendChild(row);
-update();
+</td>
+<td class="item-amount">0.00</td>`;
+tbody.appendChild(row);
+    update();
   }
-function update(){
 const get=id=>document.getElementById(id).value;
 const show=(id,value)=>document.getElementById(id).textContent=value;
 const rows=[...document.querySelectorAll('.item-row')];
@@ -182,18 +297,50 @@ show('customerView',get('customer')||'Customer name');
 show('typeView',get('type'));
 show('numberView',get('number'));
 show('dateView',get('date'));
-const itemData=rows.map(row=>({
-name:row.querySelector('.item-name').value,
-quantity:Math.max(0,Number(row.querySelector('.item-quantity').value)||0),
-price:Math.max(0,Number(row.querySelector('.item-price').value)||0)
-}));
-const total=itemData.reduce((sum,item)=>sum+item.quantity*item.price,0);
+const itemData=rows.map((row,index)=>{
+const name=row.querySelector('.item-name').value;
+const quantity=Math.max(0,Number(row.querySelector('.item-quantity').value)||0);
+const price=Math.max(0,Number(row.querySelector('.item-price').value)||0);
+const amount=quantity*price;
+
+row.querySelector('.sn').textContent=index+1;
+row.querySelector('.item-amount').textContent=money(amount);
+
+return {name,quantity,price,amount};
+});
+
+const total=itemData.reduce((sum,item)=>sum+item.amount,0);
+
 const escapeHTML=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-document.getElementById('itemsView').innerHTML=itemData.map(item=>`<div class="line"><strong>${escapeHTML(item.name||'Item')}</strong><p>Quantity: ${item.quantity} | Unit price: ${money(item.price)}</p><p>Amount: ${money(item.quantity*item.price)}</p></div>`).join('');
+
+document.getElementById('itemsView').innerHTML=`
+<table class="items-table">
+<thead>
+<tr>
+<th>S/N</th>
+<th>Item description</th>
+<th>Qty</th>
+<th>Unit price</th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody>
+${itemData.map((item,index)=>`
+<tr>
+<td>${index+1}</td>
+<td>${escapeHTML(item.name||'Item')}</td>
+<td>${item.quantity}</td>
+<td>${money(item.price)}</td>
+<td>${money(item.amount)}</td>
+</tr>`).join('')}
+</tbody>
+</table>`;
+
 show('totalView',money(total));
 show('notesView',get('notes')||'Thank you for your business!');
 }
 document.getElementById('date').value=new Date().toISOString().slice(0,10);
+  refreshSuggestions();
 update();
 </script>
 </body>
