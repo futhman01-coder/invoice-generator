@@ -286,6 +286,7 @@ row.innerHTML=`
 tbody.appendChild(row);
     update();
   }
+  function update(){
 const get=id=>document.getElementById(id).value;
 const show=(id,value)=>document.getElementById(id).textContent=value;
 const rows=[...document.querySelectorAll('.item-row')];
