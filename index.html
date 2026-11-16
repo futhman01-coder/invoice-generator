@@ -148,6 +148,8 @@ header,.form-panel,.actions{display:none!important}
 <div>
 <label>Business name</label>
 <input id="business" placeholder="Your business name" oninput="update()">
+  <label>Business logo (optional)</label>
+<input type="file" id="logoInput" accept="image/*" onchange="previewLogo(event)">
 </div>
 <div>
 <label>Customer name</label>
@@ -221,6 +223,7 @@ header,.form-panel,.actions{display:none!important}
 <div class="paper">
 <div class="paper-top">
 <div>
+  <img id="logoView" style="max-width:110px;max-height:80px;object-fit:contain;display:none;margin-bottom:10px;">
 <h2 id="businessView">YOUR BUSINESS</h2>
 <p id="contactView" class="muted"></p>
 </div>
@@ -323,6 +326,26 @@ row.innerHTML=`
 tbody.appendChild(row);
     update();
   }
+  
+function previewLogo(event){
+  const file=event.target.files[0];
+  const logo=document.getElementById('logoView');
+
+  if(!file){
+    logo.style.display='none';
+    return;
+  }
+
+  const reader=new FileReader();
+
+  reader.onload=function(){
+    logo.src=reader.result;
+    logo.style.display='block';
+  };
+
+  reader.readAsDataURL(file);
+}
+
   function update(){
 const get=id=>document.getElementById(id).value;
 const show=(id,value)=>document.getElementById(id).textContent=value;
