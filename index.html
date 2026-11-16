@@ -119,6 +119,24 @@ header,.form-panel,.actions{display:none!important}
   font-weight:bold;
   letter-spacing:1px;
 }
+  .payment-details{
+  margin-top:25px;
+  padding:15px;
+  background:#f3f6fa;
+  border-left:4px solid #173b68;
+  border-radius:6px;
+}
+
+.payment-details h3{
+  color:#173b68;
+  font-size:14px;
+  margin-top:0;
+}
+
+.payment-details p{
+  margin:7px 0;
+  color:#475569;
+  }
 .paper .total{
   background:#edf3fa;
   color:#173b68;
@@ -189,6 +207,17 @@ header,.form-panel,.actions{display:none!important}
 <input id="business" placeholder="Your business name" oninput="update()">
   <label>Business logo (optional)</label>
 <input type="file" id="logoInput" accept="image/*" onchange="previewLogo(event)">
+  <label>Bank name (optional)</label>
+<input type="text" id="bank" placeholder="e.g. GTBank" oninput="update()">
+
+<label>Account name (optional)</label>
+<input type="text" id="accountName" placeholder="Account holder's name" oninput="update()">
+
+<label>Account number (optional)</label>
+<input type="text" id="accountNumber" placeholder="Account number" oninput="update()">
+
+<label>Payment instructions (optional)</label>
+<textarea id="paymentInstructions" placeholder="Enter payment instructions" oninput="update()"></textarea>
 </div>
 <div>
 <label>Customer name</label>
@@ -312,6 +341,14 @@ header,.form-panel,.actions{display:none!important}
   </div>
 </div>
 <hr>
+<div id="paymentView" class="payment-details" style="display:none;">
+  <h3>PAYMENT DETAILS</h3>
+  <p><strong>Bank:</strong> <span id="bankView"></span></p>
+  <p><strong>Account Name:</strong> <span id="accountNameView"></span></p>
+  <p><strong>Account Number:</strong> <span id="accountNumberView"></span></p>
+  <p id="paymentInstructionsView"></p>
+</div>
+
 <p id="notesView" class="muted">Thank you for your business!</p>
 <p class="muted" style="text-align:center">Generated with Invoice & Receipt Generator</p>
 </div>
@@ -481,6 +518,21 @@ ${itemData.map((item,index)=>`
 </table>`;
 
 show('totalView',money(total));
+    const bank=get('bank').trim();
+const accountName=get('accountName').trim();
+const accountNumber=get('accountNumber').trim();
+const paymentInstructions=get('paymentInstructions').trim();
+
+const paymentView=document.getElementById('paymentView');
+
+paymentView.style.display=
+bank||accountName||accountNumber||paymentInstructions
+?'block':'none';
+
+show('bankView',bank);
+show('accountNameView',accountName);
+show('accountNumberView',accountNumber);
+show('paymentInstructionsView',paymentInstructions);
 show('notesView',get('notes')||'Thank you for your business!');
 }
 document.getElementById('date').value=new Date().toISOString().slice(0,10);
