@@ -421,6 +421,15 @@ button.secondary{background:#16835b}
 
 <button type="button" onclick="addItem()">+ Add another item</button>
 <button type="button" class="secondary" onclick="saveItems()">Save My Items & Prices</button>
+  <label>Discount percentage (%)</label>
+<input type="number" id="discountRate"
+value="0" min="0" max="100" step="0.01"
+oninput="update()">
+
+<label>Tax percentage (%)</label>
+<input type="number" id="taxRate"
+value="0" min="0" max="100" step="0.01"
+oninput="update()">
 <label>Additional notes</label>
 <textarea id="notes" placeholder="Thank you for your business!" oninput="update()"></textarea>
 
@@ -462,20 +471,20 @@ button.secondary{background:#16835b}
   </p>
 
   <p>
-    Discount (%):
-    <input type="number" id="discountRate"
-    value="0" min="0" max="100" step="0.01"
-    oninput="update()">
+    Discount (<span id="discountRateView">0</span>%):
     <span id="discountView">0.00</span>
   </p>
 
   <p>
-    Tax (%):
-    <input type="number" id="taxRate"
-    value="0" min="0" max="100" step="0.01"
-    oninput="update()">
+    Tax (<span id="taxRateView">0</span>%):
     <span id="taxView">0.00</span>
   </p>
+
+  <div class="total">
+    GRAND TOTAL:
+    <span id="totalView">0.00</span>
+  </div>
+</div>
 
   <div class="total">
     GRAND TOTAL: <span id="totalView">0.00</span>
@@ -630,6 +639,8 @@ const tax=taxableAmount*taxRate/100;
 const total=taxableAmount+tax;
 
 show('subtotalView',money(subtotal));
+show('discountRateView',discountRate);
+show('taxRateView',taxRate);
 show('discountView',money(discount));
 show('taxView',money(tax));
 
