@@ -22,10 +22,19 @@ width:100%;
 overflow-x:auto;
 margin:15px 0;
 }
-
+  
+  .table-wrap{
+  width:100%;
+  max-width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  box-sizing:border-box;
+  }
+  
 .items-table{
   width:100%;
-  min-width:650px;
+  min-width:0;
+  table-layout:fixed;
   border-collapse:collapse;
   background:white;
   font-size:13px;
@@ -163,9 +172,17 @@ button.secondary{background:#16835b}
 
   .items-table{
     width:100%;
+    min-width:0;
+    table-layout:fixed;
     border-collapse:collapse;
-  }
+    font-size:10px;
+}
 
+.items-table th,
+.items-table td{
+    padding:7px 4px;
+    overflow-wrap:anywhere;
+}
   .items-table tr{
     break-inside:avoid;
     page-break-inside:avoid;
@@ -647,6 +664,7 @@ show('taxView',money(tax));
 const escapeHTML=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 document.getElementById('itemsView').innerHTML=`
+<div class="table-wrap">
 <table class="items-table">
 <thead>
 <tr>
@@ -667,8 +685,8 @@ ${itemData.map((item,index)=>`
 <td>${money(item.amount)}</td>
 </tr>`).join('')}
 </tbody>
-</table>`;
-
+</table>
+</div>`;
 show('totalView',money(total));
     const bank=get('bank').trim();
 const accountName=get('accountName').trim();
