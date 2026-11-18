@@ -295,6 +295,26 @@ button.secondary{background:#16835b}
   margin:7px 0;
   color:#475569;
   }
+  .invoice-footer{
+  margin-top:20px;
+  padding-top:5px;
+}
+
+.invoice-footer #notesView{
+  margin:18px 0 12px;
+  color:#475569;
+  font-size:12px;
+  text-align:left;
+}
+
+.invoice-footer p:last-child{
+  margin-top:15px;
+  padding-top:10px;
+  border-top:1px solid #e2e8f0;
+  font-size:10px;
+  color:#94a3b8;
+  text-align:center;
+}
 .paper .total{
   background:#edf3fa;
   color:#173b68;
@@ -505,6 +525,7 @@ oninput="update()">
 </div>
   
 <hr>
+ <div class="invoice-footer"> 
 <div id="paymentView" class="payment-details" style="display:none;">
   <h3>PAYMENT DETAILS</h3>
   <p><strong>Bank:</strong> <span id="bankView"></span></p>
@@ -515,6 +536,7 @@ oninput="update()">
 
 <p id="notesView" class="muted">Thank you for your business!</p>
 <p class="muted" style="text-align:center">Generated with Invoice & Receipt Generator</p>
+ </div>
 </div>
 </div>
 
