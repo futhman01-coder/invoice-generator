@@ -42,18 +42,23 @@ margin:15px 0;
 
 .items-table th{
   background:#173b68;
-  color:white;
-  padding:13px 10px;
+  color:#ffffff;
+  padding:15px 10px;
   text-align:left;
-  font-weight:600;
+  font-weight:700;
+  font-size:12px;
+  letter-spacing:0.4px;
+  border-bottom:3px solid #0f2948;
 }
 
 .items-table td{
-  padding:12px 10px;
+  padding:14px 10px;
   border-bottom:1px solid #e2e8f0;
   color:#334155;
+  font-size:12px;
+  line-height:1.6;
+  vertical-align:middle;
 }
-
 .items-table tbody tr:nth-child(even){
   background:#f8fafc;
 }
@@ -211,28 +216,68 @@ button.secondary{background:#16835b}
 .paper-top{
   display:flex;
   justify-content:space-between;
-  align-items:flex-start;
+  align-items:center;
   flex-wrap:wrap;
-  gap:20px;
-  padding-bottom:22px;
+  gap:24px;
+  padding-bottom:24px;
   border-bottom:2px solid #173b68;
+  margin-bottom:22px;
 }
 
 .company-header{
   display:flex;
   align-items:center;
-  gap:15px;
+  gap:18px;
   min-width:0;
+  flex:1;
+}
+
+.company-header h2{
+  color:#173b68;
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:0.4px;
+  margin:0 0 8px;
+}
+
+.company-header p{
+  color:#64748b;
+  font-size:12px;
+  line-height:1.6;
+  margin:0;
 }
 
 .company-logo{
-  max-width:110px;
-  max-height:80px;
+  width:auto;
+  max-width:120px;
+  max-height:85px;
   object-fit:contain;
+  display:block;
+  flex-shrink:0;
 }
 
 .invoice-heading{
   text-align:right;
+  min-width:220px;
+  padding:12px 16px;
+  background:#f3f6fa;
+  border-right:4px solid #173b68;
+  border-radius:7px;
+}
+
+.invoice-heading h2{
+  color:#173b68;
+  font-size:25px;
+  font-weight:800;
+  letter-spacing:2px;
+  margin:0 0 14px;
+}
+
+.invoice-heading p{
+  color:#475569;
+  font-size:12px;
+  margin:7px 0;
+  line-height:1.5;
 }
 
 .invoice-heading h2{
@@ -260,11 +305,12 @@ button.secondary{background:#16835b}
 }
 
   .bill-to{
-  background:#f3f6fa;
-  border-left:4px solid #173b68;
-  padding:12px 16px;
-  margin:20px 0;
-  border-radius:6px;
+  background:#f7f9fc;
+  border-left:5px solid #173b68;
+  padding:17px 20px;
+  margin:24px 0;
+  border-radius:7px;
+  box-shadow:0 2px 8px rgba(23,59,104,0.05);
 }
 
 .bill-to p{
@@ -278,53 +324,76 @@ button.secondary{background:#16835b}
   letter-spacing:1px;
 }
   .payment-details{
-  margin-top:25px;
-  padding:15px;
-  background:#f3f6fa;
-  border-left:4px solid #173b68;
-  border-radius:6px;
+  margin-top:28px;
+  padding:20px;
+  background:#f7f9fc;
+  border:1px solid #e2e8f0;
+  border-left:5px solid #173b68;
+  border-radius:8px;
+  box-shadow:0 2px 8px rgba(23,59,104,0.05);
 }
 
 .payment-details h3{
   color:#173b68;
   font-size:14px;
-  margin-top:0;
+  font-weight:800;
+  letter-spacing:1px;
+  margin:0 0 14px;
+  padding-bottom:9px;
+  border-bottom:1px solid #dbe4ef;
 }
 
 .payment-details p{
-  margin:7px 0;
+  margin:9px 0;
   color:#475569;
-  }
+  font-size:12px;
+  line-height:1.7;
+}
   .invoice-footer{
   margin-top:20px;
   padding-top:5px;
 }
 
 .invoice-footer #notesView{
-  margin:18px 0 12px;
+  margin:22px 0 14px;
+  padding:14px 16px;
   color:#475569;
   font-size:12px;
+  line-height:1.7;
   text-align:left;
+  background:#f7f9fc;
+  border-left:3px solid #173b68;
+  border-radius:6px;
 }
 
 .invoice-footer p:last-child{
-  margin-top:15px;
-  padding-top:10px;
-  border-top:1px solid #e2e8f0;
+  margin-top:18px;
+  padding-top:12px;
+  border-top:1px solid #dbe4ef;
   font-size:10px;
-  color:#94a3b8;
+  font-weight:500;
+  letter-spacing:0.5px;
+  color:#8493a7;
   text-align:center;
 }
 .paper .total{
-  background:#edf3fa;
+  background:#eaf1fa;
   color:#173b68;
-  padding:16px;
-  border-radius:7px;
-  border-right:5px solid #173b68;
+  padding:19px 16px;
+  border-radius:8px;
+  border-right:6px solid #173b68;
+  border-top:1px solid #d5e1ef;
+  font-weight:800;
+  box-shadow:0 3px 10px rgba(23,59,104,0.08);
 }
 .financial-summary{
   max-width:350px;
-  margin:20px 0 20px auto;
+  margin:28px 0 26px auto;
+  padding:12px 16px;
+  background:#fbfcfe;
+  border:1px solid #e2e8f0;
+  border-radius:8px;
+  box-sizing:border-box;
 }
 
 .financial-summary p{
